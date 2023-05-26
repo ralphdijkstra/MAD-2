@@ -1,12 +1,16 @@
+import 'trailer.dart';
+
 class Movie {
   final int id;
   final String title;
   final String year;
+  final List<Trailer>? trailers;
 
   Movie({
     required this.id,
     required this.title,
     required this.year,
+    this.trailers,
   });
 
   factory Movie.fromJson(Map<String, dynamic> json) {
@@ -16,5 +20,4 @@ class Movie {
       year: json['year'] as String,
     );
   }
-
 }
