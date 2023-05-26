@@ -1,44 +1,62 @@
-import 'package:champions/models/hobby.dart';
-import 'package:champions/services/hobby_service.dart';
+import 'package:thetrailers/models/movie.dart';
+import 'package:thetrailers/services/movie_service.dart';
 import 'package:flutter/material.dart';
 
 
-class HobbiesCreate extends StatefulWidget {
-  const HobbiesCreate({Key? key}) : super(key: key);
+class MoviesCreate extends StatefulWidget {
+  const MoviesCreate({Key? key}) : super(key: key);
 
   @override
-  State<HobbiesCreate> createState() => _HobbiesCreateState();
+  State<MoviesCreate> createState() => _MoviesCreateState();
 }
 
-class _HobbiesCreateState extends State<HobbiesCreate> {
+class _MoviesCreateState extends State<MoviesCreate> {
   final _formKey = GlobalKey<FormState>();
-  final _naamController = TextEditingController();
+  final _titleController = TextEditingController();
+  final _yearController = TextEditingController();
 
   @override
   void dispose() {
-    _naamController.dispose();
+    _titleController.dispose();
+    _yearController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Hobbies - Create')),
+        appBar: AppBar(title: Text('Movies - Create')),
         body: Form(
             key: _formKey,
             child: Column(
               children: [
-                // Naam
+                // Title
                 TextFormField(
-                  controller: _naamController,
+                  controller: _titleController,
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Naam',
+                    labelText: 'Title',
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Vul naam in';
+                      return 'Vul title in';
+                    }
+                    return null;
+                  },
+                ),
+
+                // Year
+                TextFormField(
+                  controller: _yearController,
+                  textInputAction: TextInputAction.next,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Year',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Vul year in';
                     }
                     return null;
                   },
@@ -55,10 +73,11 @@ class _HobbiesCreateState extends State<HobbiesCreate> {
                           );
                         }
                         ;
-                        var hobby = Hobby(
+                        var movie = Movie(
                             id: 0,
-                            naam: _naamController.text);
-                        hobby = await HobbyService().post(hobby);
+                            title: _titleController.text,
+                            year: _yearController.text);
+                        movie = await MovieService().post(movie);
                         Navigator.pop(context);
                       },
                       child: Text('Bewaren'),

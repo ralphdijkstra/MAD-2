@@ -1,62 +1,69 @@
-import 'package:champions/models/champion.dart';
-import 'package:champions/services/champion_service.dart';
+import 'package:thetrailers/models/movie.dart';
+import 'package:thetrailers/services/movie_service.dart';
 import 'package:flutter/material.dart';
 
-
-class ChampionsCreate extends StatefulWidget {
-  const ChampionsCreate({Key? key}) : super(key: key);
+class MoviesEdit extends StatefulWidget {
+  const MoviesEdit({Key? key, required this.movie}) : super(key: key);
+  final Movie movie;
 
   @override
-  State<ChampionsCreate> createState() => _ChampionsCreateState();
+  State<MoviesEdit> createState() => _MoviesEditState();
 }
 
-class _ChampionsCreateState extends State<ChampionsCreate> {
+class _MoviesEditState extends State<MoviesEdit> {
   final _formKey = GlobalKey<FormState>();
-  final _naamController = TextEditingController();
-  final _klasController = TextEditingController();
+  final _titleController = TextEditingController();
+  final _yearController = TextEditingController();
+
+  @override
+  void initState() {
+    _titleController.text = widget.movie.title;
+    _yearController.text = widget.movie.year;
+    super.initState();
+  }
 
   @override
   void dispose() {
-    _naamController.dispose();
-    _klasController.dispose();
+    _titleController.dispose();
+    _yearController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Champions - Create')),
+        appBar: AppBar(title: Text('Movies - Edit')),
         body: Form(
             key: _formKey,
             child: Column(
               children: [
-                // Naam
+                // Title
                 TextFormField(
-                  controller: _naamController,
+                  controller: _titleController,
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Naam',
+                    labelText: 'Title',
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Vul naam in';
+                      return 'Vul title in';
                     }
                     return null;
                   },
                 ),
 
-                // Klas
+                // Years
                 TextFormField(
-                  controller: _klasController,
+                  controller: _yearController,
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Klas',
+                    labelText: 'Year',
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Vul klas in';
+                      return 'Vul year in';
                     }
                     return null;
                   },
@@ -73,11 +80,12 @@ class _ChampionsCreateState extends State<ChampionsCreate> {
                           );
                         }
                         ;
-                        var champion = Champion(
-                            id: 0,
-                            naam: _naamController.text,
-                            klas: _klasController.text);
-                        champion = await ChampionService().post(champion);
+                        var movie = Movie(
+                            id: widget.movie.id,
+                            title: _titleController.text,
+                            year: _yearController.text);
+                        movie = await MovieService()
+                            .put(widget.movie.id, movie);
                         Navigator.pop(context);
                       },
                       child: Text('Bewaren'),
