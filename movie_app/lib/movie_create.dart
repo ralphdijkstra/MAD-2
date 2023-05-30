@@ -18,6 +18,8 @@ class _MovieCreatePageState extends State<MovieCreatePage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Movie created successfully')),
     );
+
+    Navigator.pop(context); // Redirect back to the previous page
   }
 
   @override
