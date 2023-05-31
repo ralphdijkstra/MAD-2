@@ -4,7 +4,6 @@ import 'package:movie_app/services/movie_service.dart';
 import 'package:movie_app/models/movie.dart';
 import 'package:movie_app/views/movies/movie_create.dart';
 import 'package:movie_app/views/movies/movie_edit.dart';
-import 'package:movie_app/views/movies/movie_trailers.dart';
 
 void main() {
   runApp(MovieApp());
@@ -87,26 +86,11 @@ class _MovieListPageState extends State<MovieListPage> {
         itemBuilder: (context, index) {
           final movie = _movies[index];
           return ListTile(
-              leading: GestureDetector(
-                onTap: () {
-                  // Extract the movie trailers for the selected movie
-                  final selectedMovie = _movies[index];
-                  final movieTrailers = selectedMovie.trailers;
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          MovieTrailersPage(movieTrailers: movieTrailers!),
-                    ),
-                  );
-                },
-                child: CachedNetworkImage(
+              leading: CachedNetworkImage(
                   imageUrl: movie.posterUrl!,
                   placeholder: (context, url) => CircularProgressIndicator(),
                   errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
-              ),
               title: Text(movie.title),
               subtitle: Text(movie.year),
               trailing: Row(
