@@ -15,25 +15,49 @@ class MovieApi {
     }
   }
 
+  Future<Movie> createMovie(Movie movie) async {
+    final response =
+        await http.post(Uri.parse('http://10.0.2.2:8000/api/movies'),
+            headers: <String, String>{
+              'Content-Type': 'application/json',
+            },
+            body: jsonEncode({
+              'title': movie.title,
+              'year': movie.year,
+            }));
+
+    if (response.statusCode != 201) {
+      throw Exception('Failed to create movie');
+    }
+
+    final result = jsonDecode(response.body);
+    return Movie(
+        id: result['id'], title: result['title'], year: result['year']);
+  }
+
+    Future<void> updateMovie(Movie movie) async {
+    final url = Uri.parse('$apiUrl/${movie.id}');
+    final response = await http.put(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'title': movie.title,
+        'year': movie.year,
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update movie');
+    }
+  }
+
   Future<void> deleteMovie(int movieId) async {
     final url = Uri.parse('$apiUrl/$movieId');
     final response = await http.delete(url);
     if (response.statusCode != 204) {
       throw Exception('Failed to delete movie');
-    }
-  }
-
-    Future<void> createMovie(String title, String year) async {
-    final url = Uri.parse('$apiUrl/movies');
-    final response = await http.post(
-      url,
-      body: {
-        'title': title,
-        'year': year,
-      },
-    );
-    if (response.statusCode != 201) {
-      throw Exception('Failed to create movie');
     }
   }
 }

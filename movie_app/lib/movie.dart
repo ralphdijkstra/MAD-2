@@ -2,15 +2,15 @@ class Movie {
   final int id;
   final String title;
   final String year;
-  final String posterUrl;
-  final List<Trailer> trailers;
+  final String? posterUrl;
+  final List<Trailer>? trailers;
 
   Movie({
     required this.id,
     required this.title,
     required this.year,
-    required this.posterUrl,
-    required this.trailers,
+    this.posterUrl,
+    this.trailers,
   });
 
   factory Movie.fromJson(Map<String, dynamic> json) {
