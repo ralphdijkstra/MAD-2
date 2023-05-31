@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'movie.dart';
+import 'package:movie_app/models/movie.dart';
 
-class MovieApi {
+class MovieService {
   static const String apiUrl = 'http://10.0.2.2:8000/api/movies';
 
   Future<List<Movie>> fetchMovies() async {
@@ -17,7 +17,7 @@ class MovieApi {
 
   Future<Movie> createMovie(Movie movie) async {
     final response =
-        await http.post(Uri.parse('http://10.0.2.2:8000/api/movies'),
+        await http.post(Uri.parse(apiUrl),
             headers: <String, String>{
               'Content-Type': 'application/json',
             },
@@ -35,7 +35,7 @@ class MovieApi {
         id: result['id'], title: result['title'], year: result['year']);
   }
 
-    Future<void> updateMovie(Movie movie) async {
+  Future<void> updateMovie(Movie movie) async {
     final url = Uri.parse('$apiUrl/${movie.id}');
     final response = await http.put(
       url,

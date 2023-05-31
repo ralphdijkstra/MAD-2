@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'movie_api.dart';
-import 'movie.dart';
-import 'movie_create.dart';
-import 'movie_edit.dart';
+import 'package:movie_app/services/movie_service.dart';
+import 'package:movie_app/models/movie.dart';
+import 'package:movie_app/views/movies/movie_create.dart';
+import 'package:movie_app/views/movies/movie_edit.dart';
+import 'package:movie_app/views/movies/movie_trailers.dart';
 
 void main() {
   runApp(MovieApp());
@@ -38,7 +39,7 @@ class _MovieListPageState extends State<MovieListPage> {
 
   Future<void> _fetchMovies() async {
     try {
-      final movies = await MovieApi().fetchMovies();
+      final movies = await MovieService().fetchMovies();
       setState(() {
         _movies = movies;
       });
@@ -64,7 +65,7 @@ class _MovieListPageState extends State<MovieListPage> {
             TextButton(
               child: Text('Delete'),
               onPressed: () async {
-                await MovieApi().deleteMovie(movieId);
+                await MovieService().deleteMovie(movieId);
                 Navigator.pop(context); // Close the dialog
                 _fetchMovies(); // Reload the movie list
               },
@@ -86,11 +87,25 @@ class _MovieListPageState extends State<MovieListPage> {
         itemBuilder: (context, index) {
           final movie = _movies[index];
           return ListTile(
-              leading: CachedNetworkImage(
-                imageUrl: movie.posterUrl!,
-                placeholder: (context, url) => CircularProgressIndicator(),
-                errorWidget: (context, url, error) => Icon(Icons.error),
-                fit: BoxFit.cover,
+              leading: GestureDetector(
+                onTap: () {
+                  // Extract the movie trailers for the selected movie
+                  final selectedMovie = _movies[index];
+                  final movieTrailers = selectedMovie.trailers;
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          MovieTrailersPage(movieTrailers: movieTrailers!),
+                    ),
+                  );
+                },
+                child: CachedNetworkImage(
+                  imageUrl: movie.posterUrl!,
+                  placeholder: (context, url) => CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
               ),
               title: Text(movie.title),
               subtitle: Text(movie.year),

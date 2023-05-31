@@ -1,51 +1,41 @@
 import 'package:flutter/material.dart';
-import 'movie_api.dart';
-import 'movie.dart';
+import 'package:movie_app/services/movie_service.dart';
+import 'package:movie_app/models/movie.dart';
 
-class MovieEditPage extends StatefulWidget {
+class MovieCreatePage extends StatefulWidget {
   final VoidCallback updateMovieList;
-  final Movie movie;
 
-  MovieEditPage({required this.updateMovieList, required this.movie});
+  MovieCreatePage({required this.updateMovieList});
 
   @override
-  _MovieEditPageState createState() => _MovieEditPageState();
+  _MovieCreatePageState createState() => _MovieCreatePageState();
 }
 
-class _MovieEditPageState extends State<MovieEditPage> {
+class _MovieCreatePageState extends State<MovieCreatePage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _yearController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    _titleController.text = widget.movie.title;
-    _yearController.text = widget.movie.year;
-  }
-
-  Future<void> _updateMovie(String title, String year) async {
-    final updatedMovie = Movie(
-      id: widget.movie.id,
-      title: title,
-      year: year,
-    );
-    await MovieApi().updateMovie(updatedMovie);
+  Future<void> _createMovie(String title, String year) async {
+    final movie = Movie(id: 0, title: title, year: year);
+    await MovieService().createMovie(movie);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Movie updated successfully')),
+      const SnackBar(content: Text('Movie created successfully')),
     );
 
     widget.updateMovieList(); // Call the updateMovieList function in main.dart
 
     Navigator.pop(context);
+    _titleController.clear();
+    _yearController.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Movie'),
+        title: Text('Create Movie'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -86,10 +76,10 @@ class _MovieEditPageState extends State<MovieEditPage> {
                     final title = _titleController.text;
                     final year = _yearController.text;
 
-                    _updateMovie(title, year);
+                    _createMovie(title, year);
                   }
                 },
-                child: Text('Update Movie'),
+                child: Text('Create Movie'),
               ),
             ],
           ),
