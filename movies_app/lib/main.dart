@@ -26,9 +26,8 @@ class _PersoneelsAppState extends State<PersoneelsApp> {
   Widget build(BuildContext context) {
     print(_signedIn);
     return MaterialApp(
-      home: _signedIn
-          ? MovieListPage(setSignedIn: setSignedIn)
-          : LoginPage(setSignedIn: setSignedIn),
-    );
+        home: _signedIn
+            ? MovieListPage(setSignedIn: setSignedIn)
+            : LoginPage(setSignedIn: setSignedIn));
   }
 }
