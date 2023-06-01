@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/pages/login_page.dart';
 import 'package:movies_app/pages/movies/movies_index.dart';
 
 void main() {
-  runApp(const PersoneelsApp());
+  runApp(const MoviesApp());
 }
 
-class PersoneelsApp extends StatefulWidget {
-  const PersoneelsApp({Key? key}) : super(key: key);
+class MoviesApp extends StatefulWidget {
+  const MoviesApp({Key? key}) : super(key: key);
 
   @override
-  State<PersoneelsApp> createState() => _PersoneelsAppState();
+  State<MoviesApp> createState() => _MoviesAppState();
 }
 
-class _PersoneelsAppState extends State<PersoneelsApp> {
+class _MoviesAppState extends State<MoviesApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: MovieListPage());
+    return MaterialApp(
+        debugShowCheckedModeBanner: false, home: MovieListPage());
   }
 }

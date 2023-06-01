@@ -71,91 +71,99 @@ class _MovieListPageState extends State<MovieListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Personeels Index'), actions: [
-        _signedIn
-            ? IconButton(
-                onPressed: () {
-                  setSignedIn(false);
-                },
-                icon: Icon(Icons.logout),
-              )
-            : IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
+      appBar: AppBar(
+        title: Text('Movies Index'),
+        actions: [
+          _signedIn
+              ? IconButton(
+                  onPressed: () {
+                    setSignedIn(false);
+                  },
+                  icon: Icon(Icons.logout),
+                )
+              : IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
                         builder: (context) =>
-                            LoginPage(setSignedIn: setSignedIn)),
-                  );
-                },
-                icon: Icon(Icons.login),
-              )
-      ]),
+                            LoginPage(setSignedIn: setSignedIn),
+                      ),
+                    );
+                  },
+                  icon: Icon(Icons.login),
+                ),
+        ],
+      ),
       body: ListView.builder(
         itemCount: _movies.length,
         itemBuilder: (context, index) {
           final movie = _movies[index];
           return ListTile(
-              leading: GestureDetector(
-                onTap: () {
-                  // Extract the movie trailers for the selected movie
-                  final selectedMovie = _movies[index];
-                  final movieTrailers = selectedMovie.trailers;
+            leading: GestureDetector(
+              onTap: () {
+                final selectedMovie = _movies[index];
+                final movieTrailers = selectedMovie.trailers;
 
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          MovieTrailersPage(movieTrailers: movieTrailers!),
-                    ),
-                  );
-                },
-                child: CachedNetworkImage(
-                  imageUrl: movie.posterUrl!,
-                  placeholder: (context, url) => CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
-                ),
-              ),
-              title: Text(movie.title),
-              subtitle: Text(movie.year),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MovieEditPage(
-                            updateMovieList: _fetchMovies,
-                            movie: movie,
-                          ),
-                        ),
-                      );
-                    },
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        MovieTrailersPage(movieTrailers: movieTrailers!),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () => _deleteMovie(movie.id),
-                  ),
-                ],
-              ));
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MovieCreatePage(
-                updateMovieList: _fetchMovies,
+                );
+              },
+              child: CachedNetworkImage(
+                imageUrl: movie.posterUrl!,
+                placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Icon(Icons.error),
               ),
             ),
+            title: Text(movie.title),
+            subtitle: Text(movie.year),
+            trailing: _signedIn
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MovieEditPage(
+                                updateMovieList: _fetchMovies,
+                                movie: movie,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () => _deleteMovie(movie.id),
+                      ),
+                    ],
+                  )
+                : null,
           );
         },
-        child: Icon(Icons.add),
       ),
+      floatingActionButton: _signedIn
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MovieCreatePage(
+                      updateMovieList: _fetchMovies,
+                    ),
+                  ),
+                );
+              },
+              child: Icon(Icons.add),
+            )
+          : null,
     );
   }
 }
