@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/services/movie_service.dart';
+import 'package:movies_app/services/movie_services.dart';
 import 'package:movies_app/models/movie.dart';
 
 class MovieEditPage extends StatefulWidget {

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:movies_app/models/movie.dart';
+import 'package:movies_app/services/authentication_services.dart';
 
 class MovieService {
   static const String apiUrl = 'http://10.0.2.2:8000/api/movies';
@@ -16,21 +17,27 @@ class MovieService {
   }
 
   Future<Movie> createMovie(Movie movie) async {
-    final response =
-        await http.post(Uri.parse(apiUrl),
-            headers: <String, String>{
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer 13|J83OjOagZQAXryg58V2iKlu3GRJ4Rjvx1OaJkpsO'
-            },
-            body: jsonEncode({
-              'title': movie.title,
-              'year': movie.year,
-            }));
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${AuthenticationServices.bearerToken}',
+      },
+      body: jsonEncode({
+        'title': movie.title,
+        'year': movie.year,
+      }),
+    );
 
     if (response.statusCode == 201) {
       final result = jsonDecode(response.body)['data'];
+      final newToken = jsonDecode(response.body)['access_token'];
+      AuthenticationServices.updateBearerToken(newToken);
       return Movie(
-          id: result['id'], title: result['title'], year: result['year']);
+        id: result['id'],
+        title: result['title'],
+        year: result['year'],
+      );
     } else {
       throw Exception('Failed to create movie');
     }
@@ -42,7 +49,7 @@ class MovieService {
       url,
       headers: <String, String>{
         'Content-Type': 'application/json',
-        // 'Authorization': 'Bearer 10|OERG4pk1xzfHEYLHha1w5FAdTZMJA4EM5pwiVZNI',
+        'Authorization': 'Bearer ${AuthenticationServices.bearerToken}',
       },
       body: jsonEncode({
         'title': movie.title,
@@ -51,7 +58,8 @@ class MovieService {
     );
 
     if (response.statusCode == 200) {
-      // Movie updated successfully
+      final newToken = jsonDecode(response.body)['access_token'];
+      AuthenticationServices.updateBearerToken(newToken);
     } else {
       throw Exception('Failed to update movie');
     }
@@ -59,9 +67,17 @@ class MovieService {
 
   Future<void> deleteMovie(int movieId) async {
     final url = Uri.parse('$apiUrl/$movieId');
-    final response = await http.delete(url);
+    final response = await http.delete(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${AuthenticationServices.bearerToken}',
+      },
+    );
+
     if (response.statusCode == 202) {
-      // Movie deleted successfully
+      final newToken = jsonDecode(response.body)['access_token'];
+      AuthenticationServices.updateBearerToken(newToken);
     } else {
       throw Exception('Failed to delete movie');
     }

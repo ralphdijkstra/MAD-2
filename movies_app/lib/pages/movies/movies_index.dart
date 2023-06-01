@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:movies_app/services/movie_service.dart';
+import 'package:movies_app/services/movie_services.dart';
 import 'package:movies_app/models/movie.dart';
 import 'package:movies_app/pages/movies/movie_create.dart';
 import 'package:movies_app/pages/movies/movie_edit.dart';
 import 'package:movies_app/pages/movies/movie_trailers.dart';
 
 class MovieListPage extends StatefulWidget {
+  const MovieListPage({Key? key, required this.setSignedIn}) : super(key: key);
+
+  final void Function(bool signedIn) setSignedIn;
+
   @override
   _MovieListPageState createState() => _MovieListPageState();
 }
@@ -62,9 +66,14 @@ class _MovieListPageState extends State<MovieListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Movie List'),
-      ),
+      appBar: AppBar(title: Text('Personeels Index'), actions: [
+        IconButton(
+          onPressed: () {
+            widget.setSignedIn(false);
+          },
+          icon: Icon(Icons.logout),
+        ),
+      ]),
       body: ListView.builder(
         itemCount: _movies.length,
         itemBuilder: (context, index) {
