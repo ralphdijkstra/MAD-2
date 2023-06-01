@@ -14,20 +14,8 @@ class PersoneelsApp extends StatefulWidget {
 }
 
 class _PersoneelsAppState extends State<PersoneelsApp> {
-  bool _signedIn = false;
-
-  void setSignedIn(bool signedIn) {
-    setState(() {
-      _signedIn = signedIn;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    print(_signedIn);
-    return MaterialApp(
-        home: _signedIn
-            ? MovieListPage(setSignedIn: setSignedIn)
-            : LoginPage(setSignedIn: setSignedIn));
+    return MaterialApp(home: MovieListPage());
   }
 }

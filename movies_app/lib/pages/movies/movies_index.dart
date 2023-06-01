@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:movies_app/pages/login_page.dart';
 import 'package:movies_app/services/movie_services.dart';
 import 'package:movies_app/models/movie.dart';
 import 'package:movies_app/pages/movies/movie_create.dart';
@@ -7,16 +8,20 @@ import 'package:movies_app/pages/movies/movie_edit.dart';
 import 'package:movies_app/pages/movies/movie_trailers.dart';
 
 class MovieListPage extends StatefulWidget {
-  const MovieListPage({Key? key, required this.setSignedIn}) : super(key: key);
-
-  final void Function(bool signedIn) setSignedIn;
-
   @override
   _MovieListPageState createState() => _MovieListPageState();
 }
 
 class _MovieListPageState extends State<MovieListPage> {
   List<Movie> _movies = [];
+  bool _signedIn = false;
+
+  void setSignedIn(bool signedIn) {
+    setState(() {
+      _signedIn = signedIn;
+      print(_signedIn);
+    });
+  }
 
   @override
   void initState() {
@@ -67,12 +72,24 @@ class _MovieListPageState extends State<MovieListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Personeels Index'), actions: [
-        IconButton(
-          onPressed: () {
-            widget.setSignedIn(false);
-          },
-          icon: Icon(Icons.logout),
-        ),
+        _signedIn
+            ? IconButton(
+                onPressed: () {
+                  setSignedIn(false);
+                },
+                icon: Icon(Icons.logout),
+              )
+            : IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            LoginPage(setSignedIn: setSignedIn)),
+                  );
+                },
+                icon: Icon(Icons.login),
+              )
       ]),
       body: ListView.builder(
         itemCount: _movies.length,

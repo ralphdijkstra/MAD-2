@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movies_app/pages/movies/movies_index.dart';
 import 'package:movies_app/services/authentication_services.dart';
 import 'package:movies_app/pages/register_page.dart';
 
@@ -95,7 +96,8 @@ class _LoginPageState extends State<LoginPage> {
                               _emailController.text,
                               _passwordController.text,
                             );
-                            widget.setSignedIn(result);
+                            widget.setSignedIn(true);
+                            Navigator.pop(context);
                           } catch (e) {
                             widget.setSignedIn(false);
                           }
