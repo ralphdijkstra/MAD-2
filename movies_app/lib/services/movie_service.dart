@@ -20,6 +20,7 @@ class MovieService {
         await http.post(Uri.parse(apiUrl),
             headers: <String, String>{
               'Content-Type': 'application/json',
+              'Authorization': 'Bearer 13|J83OjOagZQAXryg58V2iKlu3GRJ4Rjvx1OaJkpsO'
             },
             body: jsonEncode({
               'title': movie.title,
