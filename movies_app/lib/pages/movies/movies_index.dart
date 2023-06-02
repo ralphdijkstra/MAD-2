@@ -59,7 +59,11 @@ class _MovieListPageState extends State<MovieListPage> {
               onPressed: () async {
                 await MovieService().deleteMovie(movieId);
                 Navigator.pop(context); // Close the dialog
-                _fetchMovies(); // Reload the movie list
+                _fetchMovies();
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Movie deleted successfully')),
+                );
               },
             ),
           ],

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/models/movie.dart';
 import 'package:movies_app/services/trailer_services.dart';
 import 'package:movies_app/models/trailer.dart';
 
 class TrailerCreatePage extends StatefulWidget {
-  final Movie movie;
+  final int movieId;
+  final VoidCallback updateTrailerList;
 
-  TrailerCreatePage({required this.movie});
+  TrailerCreatePage({required this.movieId, required this.updateTrailerList});
 
   @override
   _TrailerCreatePageState createState() => _TrailerCreatePageState();
@@ -19,13 +19,13 @@ class _TrailerCreatePageState extends State<TrailerCreatePage> {
 
   Future<void> _createTrailer(String title, String url) async {
     final trailer = Trailer(id: 0, title: title, url: url,);
-    await TrailerService().createTrailer(trailer, widget.movie);
+    await TrailerService().createTrailer(trailer, widget.movieId);
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Trailer created successfully')),
     );
 
-    // widget.updateTrailerList(); // Call the updateTrailerList function in main.dart
+    widget.updateTrailerList(); // Call the updateTrailerList function in main.dart
 
     Navigator.pop(context);
     _titleController.clear();

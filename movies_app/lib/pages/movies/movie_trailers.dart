@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/models/movie.dart';
 import 'package:movies_app/models/trailer.dart';
+import 'package:movies_app/models/movie.dart';
 import 'package:movies_app/pages/trailers/trailer_create.dart';
+import 'package:movies_app/services/trailer_services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class MovieTrailersPage extends StatelessWidget {
+class MovieTrailersPage extends StatefulWidget {
   final Movie movie;
   final bool signedIn;
 
-  const MovieTrailersPage({
-    required this.movie,
-    required this.signedIn,
-  });
+  MovieTrailersPage({required this.movie, required this.signedIn});
+
+  @override
+  _MovieTrailersPageState createState() => _MovieTrailersPageState();
+}
+
+class _MovieTrailersPageState extends State<MovieTrailersPage> {
+  List<Trailer>? _trailers = [];
 
   Future<void> _launchYouTubeVideo(String url) async {
-    final Map<String, String> _queryParameters = <String, String>{
+    final Map<String, String> queryParameters = <String, String>{
       'v': url,
     };
 
@@ -22,7 +27,7 @@ class MovieTrailersPage extends StatelessWidget {
         scheme: "https",
         host: "youtube.com",
         path: "watch",
-        queryParameters: _queryParameters);
+        queryParameters: queryParameters);
 
     if (!await launchUrl(
       uri,
@@ -33,17 +38,66 @@ class MovieTrailersPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final List<Trailer>? trailers = movie.trailers;
+  void initState() {
+    super.initState();
+    _fetchTrailers();
+  }
 
+  Future<void> _fetchTrailers() async {
+    try {
+      final trailers = await TrailerService().fetchTrailers(widget.movie.id);
+      setState(() {
+        _trailers = trailers;
+      });
+    } catch (e) {
+      print('Error fetching movies: $e');
+    }
+  }
+
+  void _deleteTrailer(int? trailerId) {
+    if (trailerId != null) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Confirm Delete'),
+            content: Text('Are you sure you want to delete this trailer?'),
+            actions: [
+              TextButton(
+                child: Text('Cancel'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              TextButton(
+                child: Text('Delete'),
+                onPressed: () async {
+                  await TrailerService().deleteTrailer(trailerId);
+                  Navigator.pop(context);
+                  _fetchTrailers();
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Trailer deleted successfully')),
+                  );
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Movie Trailers'),
+        title: Text(widget.movie.title),
       ),
       body: ListView.builder(
-        itemCount: trailers?.length ?? 0,
+        itemCount: _trailers?.length ?? 0,
         itemBuilder: (context, index) {
-          final Trailer? trailer = trailers?[index];
+          final Trailer? trailer = _trailers?[index];
           return ListTile(
             title: Text(trailer?.title ?? ''),
             onTap: () {
@@ -51,7 +105,7 @@ class MovieTrailersPage extends StatelessWidget {
                 _launchYouTubeVideo(trailer.url);
               }
             },
-            trailing: signedIn
+            trailing: widget.signedIn
                 ? Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -63,9 +117,7 @@ class MovieTrailersPage extends StatelessWidget {
                       ),
                       IconButton(
                         icon: Icon(Icons.delete),
-                        onPressed: () {
-                          // Handle delete functionality
-                        },
+                        onPressed: () => _deleteTrailer(trailer?.id),
                       ),
                     ],
                   )
@@ -73,13 +125,16 @@ class MovieTrailersPage extends StatelessWidget {
           );
         },
       ),
-      floatingActionButton: signedIn
+      floatingActionButton: widget.signedIn
           ? FloatingActionButton(
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => TrailerCreatePage(movie: movie),
+                    builder: (context) => TrailerCreatePage(
+                      movieId: widget.movie.id,
+                      updateTrailerList: _fetchTrailers,
+                    ),
                   ),
                 );
               },

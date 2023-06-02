@@ -1,13 +1,22 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:movies_app/models/trailer.dart';
-import 'package:movies_app/models/movie.dart';
 import 'package:movies_app/services/authentication_services.dart';
 
 class TrailerService {
   static const String apiUrl = 'http://10.0.2.2:8000/api/trailers';
 
-  Future<Trailer> createTrailer(Trailer trailer, Movie movie) async {
+  Future<List<Trailer>> fetchTrailers(int movieId) async {
+    final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/movies/${movieId}/trailers'));
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body)['data'] as List<dynamic>;
+      return jsonData.map((trailerJson) => Trailer.fromJson(trailerJson)).toList();
+    } else {
+      throw Exception('Failed to fetch trailers');
+    }
+  }
+
+  Future<Trailer> createTrailer(Trailer trailer, int movieId) async {
     final response = await http.post(
       Uri.parse(apiUrl),
       headers: <String, String>{
@@ -17,11 +26,9 @@ class TrailerService {
       body: jsonEncode({
         'title': trailer.title,
         'url': trailer.url,
-        'movie_id': movie.id,
+        'movie_id': movieId,
       }),
     );
-
-    print(movie.id);
 
     if (response.statusCode == 201) {
       final result = jsonDecode(response.body)['data'];
@@ -59,21 +66,21 @@ class TrailerService {
   //   }
   // }
 
-  // Future<void> deleteMovie(int movieId) async {
-  //   final url = Uri.parse('$apiUrl/$movieId');
-  //   final response = await http.delete(
-  //     url,
-  //     headers: <String, String>{
-  //       'Content-Type': 'application/json',
-  //       'Authorization': 'Bearer ${AuthenticationServices.bearerToken}',
-  //     },
-  //   );
+  Future<void> deleteTrailer(int trailerId) async {
+    final url = Uri.parse('$apiUrl/$trailerId');
+    final response = await http.delete(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${AuthenticationServices.bearerToken}',
+      },
+    );
 
-  //   if (response.statusCode == 202) {
-  //     final newToken = jsonDecode(response.body)['access_token'];
-  //     AuthenticationServices.updateBearerToken(newToken);
-  //   } else {
-  //     throw Exception('Failed to delete movie');
-  //   }
-  // }
+    if (response.statusCode == 202) {
+      final newToken = jsonDecode(response.body)['access_token'];
+      AuthenticationServices.updateBearerToken(newToken);
+    } else {
+      throw Exception('Failed to delete trailer');
+    }
+  }
 }
