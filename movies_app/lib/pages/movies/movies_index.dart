@@ -123,8 +123,10 @@ class _MovieListPageState extends State<MovieListPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      MovieTrailersPage(movieTrailers: movie.trailers!),
+                  builder: (context) => MovieTrailersPage(
+                    movie: movie,
+                    signedIn: _signedIn,
+                  ),
                 ),
               );
             },
