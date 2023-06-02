@@ -16,6 +16,7 @@ class _MoviesAppState extends State<MoviesApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false, home: MovieListPage());
+        debugShowCheckedModeBanner: false,
+        home: MovieListPage());
   }
 }

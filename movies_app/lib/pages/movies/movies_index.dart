@@ -68,6 +68,25 @@ class _MovieListPageState extends State<MovieListPage> {
     );
   }
 
+  void _showImageDialog(String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            width: double.infinity,
+            child: CachedNetworkImage(
+              imageUrl: imageUrl,
+              fit: BoxFit.contain,
+              placeholder: (context, url) => CircularProgressIndicator(),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,18 +119,18 @@ class _MovieListPageState extends State<MovieListPage> {
         itemBuilder: (context, index) {
           final movie = _movies[index];
           return ListTile(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      MovieTrailersPage(movieTrailers: movie.trailers!),
+                ),
+              );
+            },
             leading: GestureDetector(
               onTap: () {
-                final selectedMovie = _movies[index];
-                final movieTrailers = selectedMovie.trailers;
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        MovieTrailersPage(movieTrailers: movieTrailers!),
-                  ),
-                );
+                _showImageDialog(movie.posterUrl!);
               },
               child: CachedNetworkImage(
                 imageUrl: movie.posterUrl!,
