@@ -26,6 +26,11 @@ class AuthenticationServices {
       }),
     );
 
+    if (response.statusCode == 200) {
+      final result = jsonDecode(response.body);
+      _bearerToken = result['access_token'];
+    }
+
     return response.statusCode == 200;
   }
 
@@ -40,7 +45,6 @@ class AuthenticationServices {
 
     if (response.statusCode == 200) {
       final result = jsonDecode(response.body);
-      print(response.body);
       _bearerToken = result['access_token'];
     }
 
