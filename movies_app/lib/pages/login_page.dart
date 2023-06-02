@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/pages/movies/movies_index.dart';
 import 'package:movies_app/services/authentication_services.dart';
 import 'package:movies_app/pages/register_page.dart';
 

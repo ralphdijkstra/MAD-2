@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:movies_app/pages/login_page.dart';
 import 'package:movies_app/services/movie_services.dart';
 import 'package:movies_app/models/movie.dart';
 import 'package:movies_app/pages/movies/movie_create.dart';
