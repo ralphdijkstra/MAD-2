@@ -100,8 +100,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             );
                             if (result) {
                               // Registration success
-                              widget.setSignedIn(true);
-                              Navigator.pop(context); // Go back to the login page
+                              widget.setSignedIn(true); // Go back to the login page
                             } else {
                               // Registration failed
                               widget.setSignedIn(false);

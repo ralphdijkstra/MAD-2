@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:movies_app/pages/home_page.dart';
+import 'package:movies_app/pages/login_page.dart';
 import 'package:movies_app/pages/movies/movies_index.dart';
 
 void main() {
@@ -12,11 +14,81 @@ class MoviesApp extends StatefulWidget {
   State<MoviesApp> createState() => _MoviesAppState();
 }
 
-class _MoviesAppState extends State<MoviesApp> {
+class _MoviesAppState extends State<MoviesApp>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  bool _signedIn = false;
+  late Widget _homePage;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _homePage = LoginPage(
+      setSignedIn: setSignedIn,
+      setHomePage: setHomePage,
+    );
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void setSignedIn(bool signedIn) {
+    setState(() {
+      _signedIn = signedIn;
+      if (_signedIn) {
+        _homePage = HomePage();
+      } else {
+        _homePage = LoginPage(
+          setSignedIn: setSignedIn,
+          setHomePage: setHomePage,
+        );
+      }
+    });
+  }
+
+  void setHomePage(Widget homePage) {
+    setState(() {
+      _homePage = homePage;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: MovieListPage());
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text((_signedIn ? 'Movies App (Signed In)' : 'Movies App')),
+          actions: _signedIn
+              ? [
+                  IconButton(
+                    onPressed: () {
+                      setSignedIn(false);
+                    },
+                    icon: Icon(Icons.logout),
+                  ),
+                ]
+              : null,
+          bottom: TabBar(
+            controller: _tabController,
+            tabs: const [
+              Tab(text: 'Home'),
+              Tab(text: 'Movies'),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          controller: _tabController,
+          children: [
+            _homePage,
+            MovieListPage(signedIn: _signedIn),
+          ],
+        ),
+      ),
+    );
   }
 }

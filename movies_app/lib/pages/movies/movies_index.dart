@@ -8,20 +8,16 @@ import 'package:movies_app/pages/movies/movie_edit.dart';
 import 'package:movies_app/pages/movies/movie_trailers.dart';
 
 class MovieListPage extends StatefulWidget {
+  final bool signedIn;
+
+  MovieListPage({required this.signedIn});
+
   @override
   _MovieListPageState createState() => _MovieListPageState();
 }
 
 class _MovieListPageState extends State<MovieListPage> {
   List<Movie> _movies = [];
-  bool _signedIn = false;
-
-  void setSignedIn(bool signedIn) {
-    setState(() {
-      _signedIn = signedIn;
-      print(_signedIn);
-    });
-  }
 
   @override
   void initState() {
@@ -94,30 +90,6 @@ class _MovieListPageState extends State<MovieListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Movies Index'),
-        actions: [
-          _signedIn
-              ? IconButton(
-                  onPressed: () {
-                    setSignedIn(false);
-                  },
-                  icon: Icon(Icons.logout),
-                )
-              : IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            LoginPage(setSignedIn: setSignedIn),
-                      ),
-                    );
-                  },
-                  icon: Icon(Icons.login),
-                ),
-        ],
-      ),
       body: ListView.builder(
         itemCount: _movies.length,
         itemBuilder: (context, index) {
@@ -129,7 +101,7 @@ class _MovieListPageState extends State<MovieListPage> {
                 MaterialPageRoute(
                   builder: (context) => MovieTrailersPage(
                     movie: movie,
-                    signedIn: _signedIn,
+                    signedIn: widget.signedIn,
                   ),
                 ),
               );
@@ -146,7 +118,7 @@ class _MovieListPageState extends State<MovieListPage> {
             ),
             title: Text(movie.title),
             subtitle: Text(movie.year),
-            trailing: _signedIn
+            trailing: widget.signedIn
                 ? Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -174,7 +146,7 @@ class _MovieListPageState extends State<MovieListPage> {
           );
         },
       ),
-      floatingActionButton: _signedIn
+      floatingActionButton: widget.signedIn
           ? FloatingActionButton(
               onPressed: () {
                 Navigator.push(

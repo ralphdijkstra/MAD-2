@@ -4,9 +4,12 @@ import 'package:movies_app/services/authentication_services.dart';
 import 'package:movies_app/pages/register_page.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key, required this.setSignedIn}) : super(key: key);
+  const LoginPage(
+      {Key? key, required this.setSignedIn, required this.setHomePage})
+      : super(key: key);
 
   final void Function(bool signedIn) setSignedIn;
+  final void Function(Widget homePage) setHomePage;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -97,7 +100,6 @@ class _LoginPageState extends State<LoginPage> {
                               _passwordController.text,
                             );
                             widget.setSignedIn(true);
-                            Navigator.pop(context);
                           } catch (e) {
                             widget.setSignedIn(false);
                           }
@@ -106,23 +108,9 @@ class _LoginPageState extends State<LoginPage> {
                       child: const Text('Log In'),
                     ),
                     const SizedBox(height: 8),
-                    // Register button
                     TextButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RegisterPage(
-                              setSignedIn: (signedIn) {
-                                if (signedIn) {
-                                  setState(() {
-                                    _showSuccessMessage = true;
-                                  });
-                                }
-                              },
-                            ),
-                          ),
-                        );
+                        widget.setHomePage(RegisterPage(setSignedIn: widget.setSignedIn,));
                       },
                       child: const Text('Register'),
                     ),
