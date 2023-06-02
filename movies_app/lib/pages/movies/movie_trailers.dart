@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movies_app/models/trailer.dart';
 import 'package:movies_app/models/movie.dart';
 import 'package:movies_app/pages/trailers/trailer_create.dart';
+import 'package:movies_app/pages/trailers/trailer_edit.dart';
 import 'package:movies_app/services/trailer_services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -77,7 +78,8 @@ class _MovieTrailersPageState extends State<MovieTrailersPage> {
                   _fetchTrailers();
 
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Trailer deleted successfully')),
+                    const SnackBar(
+                        content: Text('Trailer deleted successfully')),
                   );
                 },
               ),
@@ -112,7 +114,15 @@ class _MovieTrailersPageState extends State<MovieTrailersPage> {
                       IconButton(
                         icon: Icon(Icons.edit),
                         onPressed: () {
-                          // Handle edit functionality
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TrailerEditPage(
+                                updateTrailerList: _fetchTrailers,
+                                trailer: trailer!,
+                              ),
+                            ),
+                          );
                         },
                       ),
                       IconButton(

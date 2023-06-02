@@ -44,27 +44,27 @@ class TrailerService {
     }
   }
 
-  // Future<void> updateMovie(Movie movie) async {
-  //   final url = Uri.parse('$apiUrl/${movie.id}');
-  //   final response = await http.put(
-  //     url,
-  //     headers: <String, String>{
-  //       'Content-Type': 'application/json',
-  //       'Authorization': 'Bearer ${AuthenticationServices.bearerToken}',
-  //     },
-  //     body: jsonEncode({
-  //       'title': movie.title,
-  //       'year': movie.year,
-  //     }),
-  //   );
+  Future<void> updateTrailer(Trailer trailer) async {
+    final url = Uri.parse('$apiUrl/${trailer.id}');
+    final response = await http.put(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${AuthenticationServices.bearerToken}',
+      },
+      body: jsonEncode({
+        'title': trailer.title,
+        'url': trailer.url,
+      }),
+    );
 
-  //   if (response.statusCode == 200) {
-  //     final newToken = jsonDecode(response.body)['access_token'];
-  //     AuthenticationServices.updateBearerToken(newToken);
-  //   } else {
-  //     throw Exception('Failed to update movie');
-  //   }
-  // }
+    if (response.statusCode == 200) {
+      final newToken = jsonDecode(response.body)['access_token'];
+      AuthenticationServices.updateBearerToken(newToken);
+    } else {
+      throw Exception('Failed to update movie');
+    }
+  }
 
   Future<void> deleteTrailer(int trailerId) async {
     final url = Uri.parse('$apiUrl/$trailerId');
