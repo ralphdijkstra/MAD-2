@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movies_app/pages/about_page.dart';
 import 'package:movies_app/pages/home_page.dart';
 import 'package:movies_app/pages/login_page.dart';
 import 'package:movies_app/pages/movies/movies_index.dart';
@@ -23,7 +24,7 @@ class _MoviesAppState extends State<MoviesApp>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _homePage = LoginPage(
       setSignedIn: setSignedIn,
       setHomePage: setHomePage,
@@ -62,7 +63,7 @@ class _MoviesAppState extends State<MoviesApp>
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: Text((_signedIn ? 'Movies App (Signed In)' : 'Movies App')),
+          title: Text(_signedIn ? 'Movies App (Signed In)' : 'Movies App'),
           actions: _signedIn
               ? [
                   IconButton(
@@ -76,8 +77,9 @@ class _MoviesAppState extends State<MoviesApp>
           bottom: TabBar(
             controller: _tabController,
             tabs: const [
-              Tab(text: 'Home'),
-              Tab(text: 'Movies'),
+              Tab(icon: Icon(Icons.home), text: 'Home'),
+              Tab(icon: Icon(Icons.movie), text: 'Movies'),
+              Tab(icon: Icon(Icons.info), text: 'About'),
             ],
           ),
         ),
@@ -86,6 +88,7 @@ class _MoviesAppState extends State<MoviesApp>
           children: [
             _homePage,
             MovieListPage(signedIn: _signedIn),
+            AboutPage(),
           ],
         ),
       ),
